@@ -47,7 +47,6 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(made_move, list)
         self.assertEqual(mocked_board[0][0], made_move[0][0])
 
-    def test_round(self):
 
 if __name__ == '__main__':
     unittest.main()

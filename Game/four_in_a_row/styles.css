@@ -1,0 +1,17 @@
+table{
+    border: 1px solid black;
+}
+td{
+    border: 1px solid black;
+}
+#board, #Game, #Player{
+    margin: 5px;
+    padding: 5px;
+    width: 25%;
+    float: left;
+}
+
+#board thead, #Game thead, #Player thead{
+    text-align: center;
+
+}
