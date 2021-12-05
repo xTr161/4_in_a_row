@@ -16,31 +16,31 @@ class Player:
             move = int(input(f"Player {self.value}, Make your Selection(0-6):"))
             if move > 6 or move < 0:
                 raise ValueError("Invalid move, please use a number between 0-6.")
-
         return move
 
 
 class FourInARow:
-    def __init__(self, col_size: int, row_size: int):
-        self.player_1 = None
-        self.player_2 = None
-        self.col_size: int = col_size
-        self.row_size: int = row_size
+    def __init__(self):
+        self.player_1: Union[object, None] = None
+        self.player_2: Union[object, None] = None
+        self.col_size: Union[int, None] = None
+        self.row_size: Union[int, None] = None
         self.board: Union[None, np.ndarray] = None
-        self.game_over = False
-        self.turn_value = 0
-        self.generate_players()
+        self.game_over: bool = False
+        self.turn_value: int = 0
 
-    def generate_players(self, play_computer: bool = True) -> None:
+    def generate_players(self, is_human: bool = False) -> None:
         self.player_1 = Player(1, is_human=True, color="RED")
-        self.player_2 = Player(2, is_human=play_computer, color="YELLOW")
+        self.player_2 = Player(2, is_human=is_human, color="YELLOW")
 
-    def new_board(self) -> np.ndarray:
+    def new_board(self, col_size: int, row_size: int) -> np.ndarray:
         """
         Create new board with type: numpy array
         :return: numpy array
         """
-        self.board = np.zeros((6, 7))
+        self.col_size = col_size
+        self.row_size = row_size
+        self.board = np.zeros((row_size, col_size))
         return self.board
 
     def make_move(self, value: int, col: int) -> None:
@@ -76,7 +76,7 @@ class FourInARow:
     def get_board(self):
         return np.flip(self.board, 0)
 
-    def winning_move(self, player):
+    def winning_move(self, player) -> bool:
         # Check horizontal locations for win
         for c in range(self.col_size - 3):
             for r in range(self.row_size):
