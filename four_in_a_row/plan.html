@@ -15,17 +15,24 @@
 <div class="build">
     <h3>Building the application</h3>
     <ol>
-        <li><a href="#rules">Understand rules</a></li>
-        <li><a href="#requirements">write the requirements</a></li>
-        <li>build classes</li>
-        <li>build methods</li>
-        <li>build working 2 player game</li>
-        <li>build AI using minimax</li>
-        <li>build unit tests</li>
-        <li>create restful api and webserver</li>
-        <li>create frontend using REACT</li>
-        <li>build unit integration tests</li>
+        <li>Backend
+            <ol>
+                <li><a href="#rules">Understand rules</a></li>
+                <li><a href="#classes">build classes</a></li>
+                <li>build working 2 player game</li>
+                <li>build AI</li>
+                <li>build unit tests</li>
+            </ol>
+        </li>
+        <li>Frontend
+            <ol>
+                <li>Create Grid</li>
+                <li>Create circle</li>
+                <li>Integrate with C# using blazor and webassembly</li>
+            </ol>
+        </li>
     </ol>
+
 </div>
 <div class="rules" id="rules">
     <h3>Rules:</h3>
@@ -49,16 +56,16 @@
         <li>21 moves available for each player</li>
     </ul>
 </div>
-<div class="requirements" id="requirements">
+<div id="classes">
     <h3>Classes</h3>
     <ul>
         <li><a href="#board">Board</a></li>
         <li><a href="#Player">Player</a></li>
         <li><a href="#Game">Game</a></li>
-<!--        <li><a href="#Main">Main</a></li>-->
+
     </ul>
-    <div id="board">
-        <table>
+    <div class="board">
+        <table id="board">
             <thead>
             <tr>
                 <td>Board</td>
@@ -89,8 +96,8 @@
         </table>
 
     </div>
-    <div id="Player">
-        <table>
+    <div class="Player">
+        <table id="Player">
             <thead>
             <tr>
                 <td>Player</td>
@@ -126,8 +133,8 @@
         </table>
 
     </div>
-    <div id="Game">
-        <table>
+    <div class="Game">
+        <table id="Game">
             <thead>
             <tr>
                 <td>Game</td>
@@ -176,50 +183,63 @@
             </tr>
             </tbody>
         </table>
+    </div>
+</div>
+<div>
+    <h3>Building the game</h3>
+<h4>Backend</h4>
+    <ol>
+        <li>Since the game uses rows and columns, we will need to make use of a matrix, which is an array nested in an
+            array.
+        </li>
+        <li>Player should have the option to select the row and column size to be able to play multiple variations of
+            the game
+        </li>
+        <li>The game is played by only 2 players but each player has its own attributes as its value and color will be
+            different ,and we need to allow for the possibility of a non-human player
+        </li>
+        <li>players should be able to choose between playing another human player or playing the computer</li>
+        <li>The game is turn based thus we will introduce a while loop that checks if there's a winner on every
+            iteration
+        </li>
+        <li>Define winning conditions</li>
+        <li>players can only choose columns</li>
+        <li>Since players can only choose columns but the matrix takes a column and a row value, we need a generator
+            that checks for next available row and thus the row is calculated automatically
+        </li>
+        <li>
+            Define 3 levels of AI
+        </li>
+        <li>AI level 1 uses random function
+        </li>
+        <li>
+            build a scoring system for the minimax algorithm
+        </li>
+        <li>Build minimax algorithm
+        </li>
+        <li>Build a medium level using restricted depth</li>
+        <li>Build an expert level using deep depth</li>
+    </ol>
+    <h4>Frontend</h4>
+    <div>
+
+        <h5>Grid</h5>
+        <div class="square">
+            <div class="circle empty"></div>
+        </div>
+        <div class="square">
+            <div class="circle player1"></div>
+        </div>
+        <div class="square">
+            <div class="circle player2"></div>
+        </div>
 
     </div>
-<!--    <div id="Main">-->
-<!--        <table>-->
-<!--            <thead>-->
-<!--            <tr>-->
-<!--                <td>Main</td>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--            <tr>-->
-<!--                <td>-->
-
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>-->
-
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>-->
-
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>-->
-
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr>-->
-<!--                <td>-->
-
-<!--                </td>-->
-<!--            </tr>-->
-<!--            </tbody>-->
-<!--        </table>-->
-
-<!--    </div>-->
 </div>
-
 <footer>
     <ul>
         <li><a href="https://en.wikipedia.org/wiki/Connect_Four">Wikipedia-Connect Four</a></li>
+        <li><a href="https://github.com/KeithGalli/Connect4-Python">Keith Galli: Minimax algo</a></li>
     </ul>
 </footer>
 </body>

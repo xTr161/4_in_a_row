@@ -1,17 +1,48 @@
+.header{
+    justify-content: center;
+    text-align: center;
+}
 table{
     border: 1px solid black;
 }
 td{
     border: 1px solid black;
 }
-#board, #Game, #Player{
+.classes{
+    float: left;
+}
+.board, .Game, .Player{
     margin: 5px;
     padding: 5px;
     width: 25%;
-    float: left;
+
 }
 
-#board thead, #Game thead, #Player thead{
+.board thead, .Game thead, .Player thead{
     text-align: center;
 
+}
+.empty-circle{
+    width: 25px;
+    height: 25px;
+    /*background-color: blue;*/
+}
+.square{
+      width: 50px;
+  height: 50px;
+    background-color: blue;
+}
+.circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%
+}
+.player1{
+      background: red;
+}
+.player2{
+      background: Yellow;
+}
+.empty{
+          background: black;
 }

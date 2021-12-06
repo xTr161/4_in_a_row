@@ -42,12 +42,20 @@ class FourInARow:
         self.window_length = 4
 
     def new_game(self) -> None:
+        """
+        Creates new game with user input for the column and row sizing
+        :return:
+        """
         rows = int(input("Please enter row size"))
         column = int(input("Please enter column size"))
         self.new_board(row_size=rows, col_size=column)
         self.generate_players()
 
     def generate_players(self) -> None:
+        """
+        Generate player 1 and player 2 and assign player 2 either as human or computer
+        :return: void/None
+        """
         self.player_1 = Player(1, is_human=True, color="RED")
         player2 = int(input("Who is player 2:\n1)Human\n2)Computer "))
         if player2 == 1:
@@ -72,14 +80,30 @@ class FourInARow:
             return self.board
 
     def get_board(self):
+        """
+        return the board by flipping the array, since the array ois reversed
+        :return: np.array
+        """
         return np.flip(self.board, 0)
 
     def make_move(self, player_value: int, col: int) -> None:
+        """
+        Takes player value and column and calls the generate next row method to allow placing of the value in the
+        selected column
+        :param player_value: determined by the player object value( either 1 or 2)
+        :param col: the column as passed by the player
+        :return: void/None
+        """
         if self.is_valid_location(col):
             row: int = self.generate_next_open_row(col)
             self.board[row][col] = player_value
 
-    def turn(self, player):
+    def turn(self, player) -> None:
+        """
+        Invokes a turn based system to allow either user input or AI input
+        :param player:
+        :return:
+        """
         try:
             if player.is_human:
                 col: int = player.get_move()
@@ -105,14 +129,29 @@ class FourInARow:
         self.turn_value = self.turn_value % 2
 
     def is_valid_location(self, col: int) -> bool:
+        """
+        Checks whether the column is a valid location
+        :param col: integer for the column
+        :return: boolean
+        """
         return self.board[5][col] == 0
 
     def generate_next_open_row(self, col: int) -> int:
+        """
+        Generator to determine the next available row where the value is not 0
+        :param col: integer
+        :return: integer
+        """
         for row in range(self.row_size):
             if self.board[row][col] == 0:
                 return row
 
     def winning_move(self, player) -> bool:
+        """
+        Conditionals to check if the a winning combination has been made
+        :param player:
+        :return:
+        """
         # Check horizontal locations for win
         for c in range(self.col_size - 3):
             for r in range(self.row_size):
@@ -143,7 +182,11 @@ class FourInARow:
                         self.board[r - 3][c + 3] == player:
                     return True
 
-    def get_valid_locations(self):
+    def get_valid_locations(self) -> list:
+        """
+        Get a list of possible valid locations, list is used by the AI
+        :return: list of integers
+        """
         valid_locations = []
         for col in range(self.col_size):
             if self.is_valid_location(col):
@@ -151,6 +194,11 @@ class FourInARow:
         return valid_locations
 
     def pick_best_move(self, piece):
+        """
+
+        :param piece:
+        :return:
+        """
         valid_locations = self.get_valid_locations()
         best_score = -10000
         best_col = choice(valid_locations)
@@ -165,7 +213,7 @@ class FourInARow:
 
         return best_col
 
-    def score_position(self, board, piece):
+    def score_position(self, board: list, piece) -> int:
         score = 0
 
         # Score center column
