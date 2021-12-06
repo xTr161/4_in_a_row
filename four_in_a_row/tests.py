@@ -1,22 +1,27 @@
 import unittest
+
 import numpy as np
-from core import Board, Player
+
+from core import FourInARow, Player
 
 
 class BoardTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.game = Board(row_size=6, col_size=7)
-        self.board = self.game.new_board()
-        self.player1 = Player(value=1, is_human=True, color="RED")
+        self.game = FourInARow()
+        self.col_size = 7
+        self.row_size = 6
+        self.game.new_board(row_size=self.row_size, col_size=self.col_size)
 
     def test_new_board(self):
-        board = self.game.new_board()
+        board = self.game.new_board(row_size=self.row_size, col_size=self.col_size)
 
         self.assertEqual(len(board), 6)
         self.assertEqual(len(board[0]), 7)
+        self.assertIsInstance(board, np.ndarray)
 
     def test_make_move(self):
-        self.game.make_move(self.player1, col=1)
+        self.game.player_1 = Player(1, is_human=True, color="RED")
+        self.game.player_1 = Player(2, is_human=False, color="YELLOW")
         print(self.board)
         self.assertEqual(len(self.board), 6)
 

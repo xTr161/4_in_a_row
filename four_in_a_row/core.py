@@ -1,6 +1,6 @@
 import math
 import sys
-from random import random, randint, choice
+from random import randint, choice
 from typing import Union
 
 import numpy as np
@@ -21,79 +21,10 @@ class Player:
                 raise ValueError("Invalid move, please use a number between 0-6.")
         return move
 
-    def ai_move(self):
-        if not self.is_human:
-            if self.difficulty == 1:
-                move: int = randint(0, 6)
-        return move
-
-    def minimax(self, board, depth, alpha, beta, is_maximum):
-        score = self.evaluate()
-
-        # If Maximizer has won the game return his/her
-        # evaluated score
-        if score == 10:
-            return score
-
-        # If Minimizer has won the game return his/her
-        # evaluated score
-        if score == -10:
-            return score
-
-        # If there are no more moves and no winner then
-        # it is a tie
-        if not self.is_moves_left():
-            return 0
-
-        # If this maximizer's move
-        if is_maximum:
-
-            # print("calculating maximizers moves")
-            best = -1000
-
-            # Traverse all cells
-            for i in range(4):
-                for j in range(4):
-
-                    # Check if cell is empty
-                    if board[i][j] == '_':
-                        # Make the move
-                        board[i][j] = self.value
-
-                        # Call minimax recursively and choose
-                        # the maximum value
-                        evaluation = self.minimax(board,
-                                                  depth - 1, alpha, beta,
-                                                  not is_maximum)
-                        best = max(best, evaluation)
-                        alpha = max(alpha, evaluation)
-                        # Undo the move
-                        board[i][j] = '_'
-            return best
-
-        # If this minimizer's move
-        else:
-            # print("calculating minimizers moves")
-            best = 1000
-
-            # Traverse all cells
-            for i in range(4):
-                for j in range(4):
-
-                    # Check if cell is empty
-                    if board[i][j] == '_':
-                        # Make the move
-                        board[i][j] = self.opponent
-                        # Call minimax recursively and choose
-                        # the minimum value
-                        evaluation = self.minimax(board,
-                                                  depth - 1, alpha, beta,
-                                                  not is_maximum)
-                        best = min(best, evaluation)
-                        alpha = min(alpha, evaluation)
-                        # Undo the move
-                        board[i][j] = '_'
-            return best
+    # def ai_move(self):
+    #     if not self.is_human:
+    #         if self.difficulty == 1:
+    #             return randint(0, 6)
 
 
 class FourInARow:
@@ -105,13 +36,9 @@ class FourInARow:
         self.board: Union[None, np.ndarray] = None
         self.game_over: bool = False
         self.turn_value: int = 0
-        PLAYER = 0
-        AI = 1
 
-        EMPTY = 0
         self.player_piece = 1
         self.ai_piece = 2
-
         self.window_length = 4
 
     def new_game(self) -> None:
@@ -161,11 +88,12 @@ class FourInARow:
                     print(f"Player {player.value} wins")
                     sys.exit()
             else:
-                col: int = player.ai_move()
+                col, minimax_score = self.minimax(self.board, 5, -math.inf, math.inf, True)
                 self.make_move(col=col, player_value=player.value)
                 if self.winning_move(player.value):
                     print(f"Player {player.value} wins")
                     sys.exit()
+
         except ValueError:
             print("You entered an invalid number, please enter a number between 0 and 6")
             col = player.get_move()
@@ -225,12 +153,12 @@ class FourInARow:
     def pick_best_move(self, piece):
         valid_locations = self.get_valid_locations()
         best_score = -10000
-        best_col = random.choice(valid_locations)
+        best_col = choice(valid_locations)
         for col in valid_locations:
             row = self.generate_next_open_row(col)
             temp_board = self.board.copy()
-            drop_piece(temp_board, row, col, piece)
-            score = score_position(temp_board, piece)
+            self.drop_piece(temp_board, row, col, piece)
+            score = self.score_position(temp_board, piece)
             if score > best_score:
                 best_score = score
                 best_col = col
@@ -240,56 +168,74 @@ class FourInARow:
     def score_position(self, board, piece):
         score = 0
 
-        ## Score center column
+        # Score center column
         center_array = [int(i) for i in list(board[:, self.col_size // 2])]
         center_count = center_array.count(piece)
         score += center_count * 3
 
-        ## Score Horizontal
+        # Score Horizontal
         for r in range(self.row_size):
             row_array = [int(i) for i in list(board[r, :])]
             for c in range(self.col_size - 3):
-                window = row_array[c:c + WINDOW_LENGTH]
+                window = row_array[c:c + self.window_length]
                 score += self.evaluate_window(window, piece)
 
-        ## Score Vertical
+        # Score Vertical
         for c in range(self.col_size):
             col_array = [int(i) for i in list(board[:, c])]
             for r in range(self.row_size - 3):
-                window = col_array[r:r + WINDOW_LENGTH]
+                window = col_array[r:r + self.window_length]
                 score += self.evaluate_window(window, piece)
 
-        ## Score posiive sloped diagonal
+        # Score positive sloped diagonal
         for r in range(self.row_size - 3):
             for c in range(self.col_size - 3):
-                window = [board[r + i][c + i] for i in range(WINDOW_LENGTH)]
+                window = [board[r + i][c + i] for i in range(self.window_length)]
                 score += self.evaluate_window(window, piece)
 
         for r in range(self.row_size - 3):
             for c in range(self.col_size - 3):
-                window = [board[r + 3 - i][c + i] for i in range(WINDOW_LENGTH)]
+                window = [board[r + 3 - i][c + i] for i in range(self.window_length)]
                 score += self.evaluate_window(window, piece)
 
         return score
 
-    def is_terminal_node(self, board):
-        return self.winning_move(board, self.player_piece) or self.winning_move(board, self.ai_piece) or len(
+    def is_terminal_node(self):
+        return self.winning_move(self.player_piece) or self.winning_move(self.ai_piece) or len(
             self.get_valid_locations()) == 0
 
-    def minimax(self, board, depth, alpha, beta, maximizingPlayer):
+    def evaluate_window(self, window, piece):
+        score = 0
+        opp_piece = self.player_piece
+        if piece == self.player_piece:
+            opp_piece = self.ai_piece
+
+        if window.count(piece) == 4:
+            score += 100
+        elif window.count(piece) == 3 and window.count(0) == 1:
+            score += 5
+        elif window.count(piece) == 2 and window.count(0) == 2:
+            score += 2
+
+        if window.count(opp_piece) == 3 and window.count(0) == 1:
+            score -= 4
+
+        return score
+
+    def minimax(self, board, depth, alpha, beta, maximizing_player):
         valid_locations = self.get_valid_locations()
-        is_terminal = self.is_terminal_node(board)
+        is_terminal = self.is_terminal_node()
         if depth == 0 or is_terminal:
             if is_terminal:
-                if self.winning_move(board, self.ai_piece):
+                if self.winning_move(self.ai_piece):
                     return None, 100000000000000
-                elif self.winning_move(board, self.player_piece):
+                elif self.winning_move(self.player_piece):
                     return None, -10000000000000
                 else:  # Game is over, no more valid moves
                     return None, 0
             else:  # Depth is zero
                 return None, self.score_position(board, self.ai_piece)
-        if maximizingPlayer:
+        if maximizing_player:
             value = -math.inf
             column = choice(valid_locations)
             for col in valid_locations:
@@ -320,3 +266,7 @@ class FourInARow:
                 if alpha >= beta:
                     break
             return column, value
+
+    @staticmethod
+    def drop_piece(board, row, col, piece):
+        board[row][col] = piece
